@@ -42,17 +42,17 @@ pub async fn main(req: Request, env: Env, _ctx: worker::Context) -> Result<Respo
 
 `worker` `0.0.21` introduced an `http` feature flag which starts to replace custom types with widely used types from the [`http`](https://docs.rs/http/latest/http/) crate.
 
-This makes it much easier to use crates which use these standard types such as `axum` and `hyper`. 
+This makes it much easier to use crates which use these standard types such as `axum` and `hyper`.
 
 This currently does a few things:
 
-1. Introduce `Body`, which implements `http_body::Body` and is a simple wrapper around `web_sys::ReadableStream`. 
+1. Introduce `Body`, which implements `http_body::Body` and is a simple wrapper around `web_sys::ReadableStream`.
 1. The `req` argument when using the `[event(fetch)]` macro becomes `http::Request<worker::Body>`.
 1. The expected return type for the fetch handler is `http::Response<B>` where `B` can be any `http_body::Body<Data=Bytes>`.
-1. The argument for `Fetcher::fetch_request` is `http::Request<worker::Body>`. 
+1. The argument for `Fetcher::fetch_request` is `http::Request<worker::Body>`.
 1. The return type of `Fetcher::fetch_request` is `Result<http::Response<worker::Body>>`.
 
-The end result is being able to use frameworks like `axum` directly (see [example](./examples/axum)): 
+The end result is being able to use frameworks like `axum` directly (see [example](./examples/axum)):
 
 ```rust
 pub async fn root() -> &'static str {
@@ -154,6 +154,7 @@ and modules (as long as they compile to the `wasm32-unknown-unknown` target).
 Once you're ready to run your project:
 
 First check that the wrangler version is 2.x
+
 ```bash
 npx wrangler --version
 ```
@@ -172,6 +173,7 @@ npx wrangler publish
 ```
 
 If you would like to have `wrangler` installed on your machine, see instructions in [wrangler repository](https://github.com/cloudflare/wrangler2).
+
 ## Durable Object, KV, Secret, & Variable Bindings
 
 All "bindings" to your script (Durable Object & KV Namespaces, Secrets, and Variables) are
@@ -277,14 +279,17 @@ new_classes = ["Chatroom"] # Array of new classes
 ## Queues
 
 ### Enabling queues
+
 As queues are in beta you need to enable the `queue` feature flag.
 
 Enable it by adding it to the worker dependency in your `Cargo.toml`:
+
 ```toml
 worker = {version = "...", features = ["queue"]}
 ```
 
 ### Example worker consuming and producing messages:
+
 ```rust
 use worker::*;
 use serde::{Deserialize, Serialize};
@@ -367,8 +372,8 @@ const mf = new Miniflare({
   scriptPath: "./build/worker/shim.mjs",
   modules: true,
   modulesRules: [
-    { type: "CompiledWasm", include: ["**/*.wasm"], fallthrough: true }
-  ]
+    { type: "CompiledWasm", include: ["**/*.wasm"], fallthrough: true },
+  ],
 });
 
 const res = await mf.dispatchFetch("http://localhost");
@@ -379,6 +384,7 @@ assert.strictEqual(await res.text(), "Hello, World!");
 ## D1 Databases
 
 ### Enabling D1 databases
+
 As D1 databases are in alpha, you'll need to enable the `d1` feature on the `worker` crate.
 
 ```toml
@@ -386,6 +392,7 @@ worker = { version = "x.y.z", features = ["d1"] }
 ```
 
 ### Example usage
+
 ```rust
 use worker::*;
 
@@ -414,7 +421,6 @@ pub async fn main(request: Request, env: Env, _ctx: Context) -> Result<Response>
 		.await
 }
 ```
-
 
 # Notes and FAQ
 
@@ -462,7 +468,7 @@ please [take a look](https://www.cloudflare.com/careers/).
 
 1. Upgrading worker package to version `0.0.18` and higher
 
-- While upgrading your worker to version `0.0.18` an error `error[E0432]: unresolved import `crate::sys::IoSourceState` can appear.
+- While upgrading your worker to version `0.0.18` an error `error[E0432]: unresolved import crate::sys::IoSourceState` can appear.
   In this case, upgrade `package.edition` to `edition = "2021"` in `wrangler.toml`
 
 ```toml
@@ -475,7 +481,7 @@ edition = "2021"
 1. [Trigger](https://github.com/cloudflare/workers-rs/actions/workflows/create-release-pr.yml) a workflow to create a release PR.
 1. Review version changes and merge PR.
 1. A draft GitHub release will be created. Author release notes and publish when ready.
-1. Crates (`worker-sys`, `worker-macros`, `worker`) will be published automatically. 
+1. Crates (`worker-sys`, `worker-macros`, `worker`) will be published automatically.
 
 # Contributing
 
